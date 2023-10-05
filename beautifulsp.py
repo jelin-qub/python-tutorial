@@ -51,5 +51,3 @@ def store_to_table(engine,list_of_items,table_name,headers):
 store_to_table(engine, data, 'countries_list',headers)
 
 
-#db
-
