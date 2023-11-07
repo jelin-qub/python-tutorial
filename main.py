@@ -1,13 +1,13 @@
 import matplotlib.pyplot as plt
-import numpy as np
-import matplotlib as mpl
 import sqlalchemy as db
 import requests
 from bs4 import BeautifulSoup
 
+# Create an SQLite database and establish a connection
 engine = db.create_engine('sqlite:///datacamp.sqlite')
 conn = engine.connect()
 metadata = db.MetaData()
+
 
 def ensure_table(engine, table_name, headers):
     inspector = db.inspect(engine)
@@ -16,7 +16,6 @@ def ensure_table(engine, table_name, headers):
         metadata = db.MetaData()
         columns = [db.Column(header.lower(), db.String(255)) for header in headers if header.strip()]
         table = db.Table(table_name, metadata, *columns)
-        metadata.create_all(engine)
         try:
             metadata.create_all(engine)
         except Exception as e:
@@ -24,7 +23,10 @@ def ensure_table(engine, table_name, headers):
     else:
         print(table_name + ' ' + "exist")
 
-# Parsing table from URL which will return the parsed table as an array of rows
+
+
+
+# Parsing table from URL which will return the parsed data(table) as an array of rows
 def parse_table(url):
     try:
             r = requests.get(url)
@@ -39,7 +41,7 @@ def parse_table(url):
                 titles = header_row.get_text().strip().replace('\n', ',')
                 print(titles)
 
-                # Datas of each row
+                # Extract datas of each row
                 data = []
                 for row in table.find_all("tr")[1:]:
                     # Extract text from each cell in the row
@@ -82,11 +84,13 @@ def storing_to_table(engine, data, table_name, headers):
         print(f"An error occurred while storing data to the table: {e}")
     return countries,populations
 
+
+# Create a bar chart
 def mapping_tochart(x,y):
         fig, ax = plt.subplots()  # Create a figure containing a single axes.
         ax.bar(y, x)  # Plot some data on the axes.
         plt.show()
-    # # Convert populations to numeric values for plotting
+    # Convert populations to numeric values for plotting
     # populations_numeric = [int(pop.replace(',', '')) for pop in y]
 
 
@@ -95,7 +99,7 @@ url = 'https://en.wikipedia.org/wiki/List_of_countries_and_dependencies_by_popul
 headers, data,country,population = parse_table(url)
 ensure_table(engine, 'countries_list', headers)
 
-# Store data in the database table
+# Store data in the database table and create the chart
 countries,populations =storing_to_table(engine, data, 'countries_list',headers)
 
 mapping_tochart(countries,populations)
