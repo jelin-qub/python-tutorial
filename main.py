@@ -8,7 +8,7 @@ engine = db.create_engine('sqlite:///datacamp.sqlite')
 conn = engine.connect()
 metadata = db.MetaData()
 
-
+#to ensure that required tables are present.
 def ensure_table(engine, table_name, headers):
     inspector = db.inspect(engine)
 
@@ -26,7 +26,8 @@ def ensure_table(engine, table_name, headers):
 
 
 
-# Parsing table from URL which will return the parsed data(table) as an array of rows
+# Parsing table from URL which will
+# return the parsed data(table) as an array of rows
 def parse_table(url):
     try:
             r = requests.get(url)
@@ -88,10 +89,10 @@ def storing_to_table(engine, data, table_name, headers):
 # Create a bar chart
 def mapping_tochart(x,y):
         fig, ax = plt.subplots()  # Create a figure containing a single axes.
-        ax.bar(y, x)  # Plot some data on the axes.
+        ax.bar(y,x)  # Plot some data on the axes.
         plt.show()
     # Convert populations to numeric values for plotting
-    # populations_numeric = [int(pop.replace(',', '')) for pop in y]
+    #populations_numeric = [int(pop.replace(',', '')) for pop in y]
 
 
 # Ensure the table exists in the database
